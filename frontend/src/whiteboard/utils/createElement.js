@@ -1,0 +1,53 @@
+import rough from "roughjs";
+import { toolTypes } from "../constants"; 
+
+const generator = rough.generator();
+
+const generateRectangle = ({x1, y1, x2, y2}) => {
+    return generator.rectangle(x1, y1, x2-x1, y2-y1, {
+        stroke:"blue",                  //vary later
+    });
+};
+
+const generateLine = ({x1, y1, x2, y2}) => {
+    return generator.line(x1, y1, x2, y2, {
+        stroke:"red",                  //vary later
+    });
+};
+
+export const createElement = ({x1, y1, x2, y2, toolType, id}) => {
+    let roughElement;
+
+    switch(toolType) {
+        case toolTypes.RECTANGLE:
+            roughElement = generateRectangle({x1, y1, x2, y2});
+            return {
+                id: id,
+                roughElement,
+                type: toolType,
+                x1, 
+                y1,
+                x2,
+                y2,
+            };
+        case toolTypes.LINE:
+            roughElement = generateLine({x1, y1, x2, y2});
+            return {
+                id: id,
+                roughElement,
+                type: toolType,
+                x1, 
+                y1,
+                x2,
+                y2,
+            };
+        case toolTypes.PENCIL:
+            return {
+                id,
+                type: toolType,
+                points: [{x: x1, y: y1}],
+            };
+        default:
+            throw new Error("No valid toolType");
+    }
+};

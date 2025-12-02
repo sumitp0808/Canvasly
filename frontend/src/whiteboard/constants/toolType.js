@@ -1,0 +1,11 @@
+export const toolTypes = {
+PENCIL: "PENCIL",
+LINE: "LINE",
+TEXT: "TEXT",
+RECTANGLE: "RECTANGLE",
+ELLIPSE: "ELLIPSE",
+COLOR: "COLOR",
+ERASER: "ERASER",
+UNDO: "UNDO",
+REDO: "REDO",
+};

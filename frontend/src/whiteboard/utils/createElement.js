@@ -5,13 +5,13 @@ const generator = rough.generator();
 
 const generateRectangle = ({x1, y1, x2, y2}) => {
     return generator.rectangle(x1, y1, x2-x1, y2-y1, {
-        stroke:"blue",                  //vary later
+        stroke:"blue",                  //will vary later using GUI
     });
 };
 
 const generateLine = ({x1, y1, x2, y2}) => {
     return generator.line(x1, y1, x2, y2, {
-        stroke:"red",                  //vary later
+        stroke:"red",                  //will vary later
     });
 };
 

@@ -4,7 +4,7 @@ import { getSvgPathFromStroke } from "./getSVGPathFromStroke";
 
 const drawPencilElement = (context, element) => {
     //vary specifics later
-const myStroke = getStroke(element.points, {
+    const myStroke = getStroke(element.points, {
   size: 4,
   thinning: 0.6,
   smoothing: 0.8,
@@ -24,6 +24,13 @@ context.fill(myPath);
 
 };
 
+const drawTextElement = (context, element) => {
+    context.textBaseline = "top";
+    context.fillStyle = "green";
+    context.font = '24px sans-serif';      //can vary text-styling later
+    context.fillText(element.text, element.x1, element.y1);
+};
+
 export const drawElement = ({roughCanvas, context, element}) => {
     switch(element.type) {
         case toolTypes.RECTANGLE:
@@ -31,6 +38,9 @@ export const drawElement = ({roughCanvas, context, element}) => {
             return roughCanvas.draw(element.roughElement);   //same4 rect&line
         case toolTypes.PENCIL:
             drawPencilElement(context, element);
+            break;
+        case toolTypes.TEXT:
+            drawTextElement(context, element);
             break;
         default:
             throw new Error("couldnt draW that");

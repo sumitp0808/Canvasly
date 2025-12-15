@@ -10,6 +10,8 @@ import {updateElement as updateElementInStore} from "./whiteboardSlice";
 
 const Whiteboard = () => {
   const canvasRef = useRef();
+  const textareaRef = useRef(); // for text insertion tool
+
   const toolType = useSelector((state) => state.whiteboard.tool);
   const elements = useSelector((state) => state.whiteboard.elements);
 
@@ -33,6 +35,11 @@ const Whiteboard = () => {
 
   const handleMouseDown = (event) => {
     const {clientX, clientY} = event;
+
+    //to avoid final replacement of text(near last click) on blur
+    if(selectedElement && action === actions.WRITING){
+      return;
+    }
 
     const element = createElement({
       x1: clientX,
@@ -63,7 +70,7 @@ const Whiteboard = () => {
   };
 
   const handleMouseUp = () => {
-    const selectedElementIndex = elements.findIndex(el => el.id === selectedElement.id);
+    const selectedElementIndex = elements.findIndex(el => el.id === selectedElement?.id);
 
     if(selectedElementIndex !== -1){
       if(action === actions.DRAWING){
@@ -108,9 +115,42 @@ const Whiteboard = () => {
     }
   };
 
+  const handleTextareaOnBlur = (event) => {
+    const {id, x1, y1, type } = selectedElement;
+    const index = elements.findIndex(el => el.id === selectedElement.id)
+    if(index != -1){
+      updateElement({id, x1, y1, type, text: event.target.value, index}, 
+        elements
+      );
+
+      setAction(null);
+      setSelectedElement(null);
+    }
+  };
+
   return (
     <>
         <Toolbar />
+        {action === actions.WRITING ? (
+          <textarea 
+          ref = {textareaRef}
+          onBlur={handleTextareaOnBlur}
+          style={{
+            position: 'absolute',
+            top: selectedElement.y1-3,
+            left: selectedElement.x1,
+            font: "24px sans-serif",
+            margin: 0,
+            padding: 0,
+            border: 0,
+            outline: 0,
+            resize: "auto",
+            overflow: "hidden",
+            whitespace: "pre",
+            background: "transparent",
+          }}
+        />
+        ) : null } 
         <canvas 
           ref = {canvasRef}
           width = {window.innerWidth}
@@ -118,6 +158,7 @@ const Whiteboard = () => {
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
           onMouseMove={handleMouseMove}
+          id='canvas'
         />
     </>
   )

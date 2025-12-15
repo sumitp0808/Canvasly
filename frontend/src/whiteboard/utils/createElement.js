@@ -15,6 +15,18 @@ const generateLine = ({x1, y1, x2, y2}) => {
     });
 };
 
+const generateEllipse = ({x1, y1, x2, y2}) => {
+    const width = Math.abs(x2-x1);
+    const height = Math.abs(y2-y1);
+
+    const centerX = x1 + (x2-x1)/2;
+    const centerY = y1 + (y2-y1)/2;
+
+    return generator.ellipse(centerX, centerY, width, height, {
+        stroke : "purple",         //will vary later
+    });
+}
+
 export const createElement = ({x1, y1, x2, y2, toolType, id, text}) => {
     let roughElement;
 
@@ -26,6 +38,17 @@ export const createElement = ({x1, y1, x2, y2, toolType, id, text}) => {
                 roughElement,
                 type: toolType,
                 x1, 
+                y1,
+                x2,
+                y2,
+            };
+        case toolTypes.ELLIPSE:
+            roughElement = generateEllipse({x1, y1, x2, y2});
+            return {
+                id,
+                roughElement,
+                type: toolType,
+                x1,
                 y1,
                 x2,
                 y2,

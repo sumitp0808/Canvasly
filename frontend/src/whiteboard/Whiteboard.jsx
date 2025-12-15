@@ -52,6 +52,7 @@ const Whiteboard = () => {
 
     switch(toolType){
       case toolTypes.RECTANGLE:
+      case toolTypes.ELLIPSE:
       case toolTypes.LINE:
       case toolTypes.PENCIL: {
         setAction(actions.DRAWING);

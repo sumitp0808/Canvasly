@@ -10,6 +10,7 @@ export const updateElement = ({index, id, x1, x2, y1, y2, type, text}, elements)
     switch(type){
         case toolTypes.LINE:
         case toolTypes.RECTANGLE:
+        case toolTypes.ELLIPSE:
             const updatedElement = createElement({
                 id,
                 x1, 

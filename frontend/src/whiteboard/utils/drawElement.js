@@ -35,6 +35,7 @@ export const drawElement = ({roughCanvas, context, element}) => {
     switch(element.type) {
         case toolTypes.RECTANGLE:
         case toolTypes.LINE:
+        case toolTypes.ELLIPSE:
             return roughCanvas.draw(element.roughElement);   //same4 rect&line
         case toolTypes.PENCIL:
             drawPencilElement(context, element);

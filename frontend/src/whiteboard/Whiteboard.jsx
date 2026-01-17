@@ -6,7 +6,11 @@ import { toolTypes, actions, cursorPositions } from "./constants";
 import { adjustElementCoordinates, adjustmentRequired, createElement , drawElement, updateElement, getElementAtPosition, getCursorForPosition, getResizedCoordinates, updatePencilElementWhenMoving} from "./utils";
 import {v4 as uuid} from 'uuid';
 import {updateElement as updateElementInStore} from "./whiteboardSlice";
+import { emitCursorPosition } from "../socketConn/socketConn";
 
+//for cursors
+let emitCursor = true;
+let lastCursorPosition;
 
 const Whiteboard = () => {
   const canvasRef = useRef();
@@ -129,6 +133,21 @@ const Whiteboard = () => {
 
   const handleMouseMove = (event) => {
     const {clientX, clientY} = event;
+
+    //cursor update
+
+    lastCursorPosition = {x: clientX, y: clientY};
+    if(emitCursor) {
+      emitCursorPosition({x: clientX, y: clientY});
+      emitCursor = false;
+
+      //updating cursor position only after some delay
+      setTimeout(() => {
+        emitCursor = true;
+        emitCursorPosition(lastCursorPosition);
+      }, [100]);
+    }
+
 
     if(action == actions.DRAWING){
       //find ind of selected el

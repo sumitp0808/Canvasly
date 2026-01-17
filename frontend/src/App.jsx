@@ -1,3 +1,4 @@
+import CursorOverlay from "./cursorOverlay/CursorOverlay";
 import { connectWithSocketServer } from "./socketConn/socketConn";
 import Whiteboard from "./whiteboard/Whiteboard"
 import { useEffect } from "react";
@@ -11,6 +12,7 @@ function App() {
   return (
     <>
       <Whiteboard />
+      <CursorOverlay />
     </>
   )
 }

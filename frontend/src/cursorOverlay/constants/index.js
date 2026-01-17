@@ -1,0 +1,1 @@
+export {cursorColors} from './cursorColors';

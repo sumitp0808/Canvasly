@@ -2,8 +2,8 @@ import Toolbar from "./ToolBar"
 import { useRef, useLayoutEffect, useState} from "react";
 import rough from "roughjs";
 import { useSelector, useDispatch } from "react-redux";
-import { toolTypes, actions } from "./constants";
-import { adjustElementCoordinates, adjustmentRequired, createElement , drawElement, updateElement} from "./utils";
+import { toolTypes, actions, cursorPositions } from "./constants";
+import { adjustElementCoordinates, adjustmentRequired, createElement , drawElement, updateElement, getElementAtPosition, getCursorForPosition, getResizedCoordinates, updatePencilElementWhenMoving} from "./utils";
 import {v4 as uuid} from 'uuid';
 import {updateElement as updateElementInStore} from "./whiteboardSlice";
 
@@ -41,40 +41,72 @@ const Whiteboard = () => {
       return;
     }
 
-    const element = createElement({
-      x1: clientX,
-      y1: clientY,
-      x2: clientX,
-      y2: clientY,
-      toolType,
-      id: uuid(),
-    });
 
     switch(toolType){
       case toolTypes.RECTANGLE:
       case toolTypes.ELLIPSE:
       case toolTypes.LINE:
       case toolTypes.PENCIL: {
+        const element = createElement({
+          x1: clientX,
+          y1: clientY,
+          x2: clientX,
+          y2: clientY,
+          toolType,
+          id: uuid(),
+        });
         setAction(actions.DRAWING);
+        setSelectedElement(element);
+        dispatch(updateElementInStore(element));
         break;
       }
       case toolTypes.TEXT: {
+        const element = createElement({
+        x1: clientX,
+        y1: clientY,
+        x2: clientX,
+        y2: clientY,
+        toolType,
+        id: uuid(),
+        });
+
         setAction(actions.WRITING);
+        setSelectedElement(element);
+        dispatch(updateElementInStore(element));
+        break;
+      }
+      case toolTypes.SELECTION: {
+        const element = getElementAtPosition(clientX, clientY, elements)
+        
+        //for shapes
+        if(element && (element.type === toolTypes.RECTANGLE || element.type === toolTypes.ELLIPSE || element.type === toolTypes.TEXT || element.type === toolTypes.LINE)){
+          setAction(element.position === cursorPositions.INSIDE ? actions.MOVING : actions.RESIZING);
+
+          const offsetX = clientX - element.x1; //how far from top and left side
+          const offsetY = clientY - element.y1;
+
+          setSelectedElement({...element, offsetX, offsetY});
+        }
+        //for freehand drawing
+        if(element && element.type == toolTypes.PENCIL){
+          setAction(actions.MOVING)
+          //there are many points => all points offset
+          const xOffsets = element.points.map((point) => clientX - point.x);
+          const yOffsets = element.points.map((point) => clientY - point.y);
+
+          setSelectedElement({ ...element, xOffsets, yOffsets});
+        }
+
         break;
       }
     }
-
-    setSelectedElement(element);
-
-    dispatch(updateElementInStore(element));
-
   };
 
   const handleMouseUp = () => {
     const selectedElementIndex = elements.findIndex(el => el.id === selectedElement?.id);
 
     if(selectedElementIndex !== -1){
-      if(action === actions.DRAWING){
+      if(action === actions.DRAWING || action == actions.RESIZING){
         if(adjustmentRequired(elements[selectedElementIndex].type)){
           const {x1, y1, x2, y2} = adjustElementCoordinates(elements[selectedElementIndex]);
 
@@ -114,6 +146,76 @@ const Whiteboard = () => {
         }, elements);
       }
     }
+
+    if(toolType == toolTypes.SELECTION){
+      const element = getElementAtPosition(clientX, clientY, elements);
+
+      event.target.style.cursor = element ? getCursorForPosition(element.position) : "default";
+
+      if(selectedElement && toolType == toolTypes.SELECTION && action == actions.MOVING && selectedElement.type == toolTypes.PENCIL){
+        const newPoints = selectedElement.points.map((_, index) => ({
+          x: clientX - selectedElement.xOffsets[index],
+          y: clientY - selectedElement.yOffsets[index],
+        }));
+
+        const index = elements.findIndex((el) => el.id === selectedElement.id);
+        
+        if(index !== -1){
+          updatePencilElementWhenMoving({
+            index,
+            newPoints,
+          }, elements);
+        }
+        
+        return;  //to skip next if execution
+      }
+
+      if(toolType === toolTypes.SELECTION && action === actions.MOVING && selectedElement){
+        const {id, x1, x2, y1, y2, type, offsetX, offsetY, text} = selectedElement;
+
+        const width = x2-x1;      //width & height
+        const height = y2- y1;    //remains const on shifting
+
+        const newX1 = clientX - offsetX;
+        const newY1 = clientY - offsetY;
+
+        const selectedElementIndex = elements.findIndex((el) => el.id === selectedElement.id);
+
+        if(selectedElementIndex !== -1){
+          updateElement({
+            id, 
+            x1: newX1,
+            y1: newY1,
+            x2: newX1 + width,
+            y2: newY1 + height,
+            type,
+            index: selectedElementIndex,
+            text,
+          }, elements);
+        }
+      }
+    }
+
+    if(toolType == toolTypes.SELECTION && action == actions.RESIZING && selectedElement){
+      const {id, type, position, ...coordinates } = selectedElement;
+
+      const {x1, y1, x2, y2} = getResizedCoordinates(clientX, clientY, position, coordinates);
+
+      const selectedElementIndex = elements.findIndex((el) => el.id === selectedElement.id);
+
+      if(selectedElementIndex !== -1){
+        updateElement({
+          id,
+          x1,
+          x2,
+          y1,
+          y2,
+          type,
+          index: selectedElementIndex,
+        }, elements);
+      }
+    }
+
   };
 
   const handleTextareaOnBlur = (event) => {

@@ -6,6 +6,7 @@ FaPencilAlt,
 FaUndo,
 FaRedo,
 FaEraser,
+FaMousePointer,
 } from 'react-icons/fa';
 import { BsSquare, BsCircle, BsPalette, BsSlash } from 'react-icons/bs';
 import { MdDeleteSweep, MdTextFields } from "react-icons/md";
@@ -39,6 +40,7 @@ const IconButton = ({icon, type}) => {
 };
 
 const tools = [
+{ icon: <FaMousePointer />, label: 'Select', type: toolTypes.SELECTION },
 { icon: <FaPencilAlt />, label: 'Pencil', type: toolTypes.PENCIL },
 { icon: <BsSlash />, label: 'Line', type: toolTypes.LINE },
 { icon: <MdTextFields />, label: 'Text', type: toolTypes.TEXT },

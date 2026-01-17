@@ -1,6 +1,9 @@
 export {createElement} from './createElement';
-export {updateElement} from './updateElement';
+export {updateElement, updatePencilElementWhenMoving} from './updateElement';
 export {drawElement} from './drawElement';
 export {adjustmentRequired} from './adjustmentRequired';
 export {adjustElementCoordinates} from './adjustElementCoordinates';
 export {getSvgPathFromStroke} from './getSVGPathFromStroke';
+export {getElementAtPosition} from './getElementAtPosition';
+export {getCursorForPosition} from './getCursorForPosition';
+export {getResizedCoordinates} from './getResizedCoordinates';

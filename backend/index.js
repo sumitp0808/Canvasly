@@ -41,6 +41,10 @@ io.on('connection', (socket) => {
             userId: socket.id,
         });
     });
+
+    socket.on('disconnect', () => {
+        socket.broadcast.emit('user-disconnected', socket.id);
+    });
 });
 
 app.get('/', (req, res) => {

@@ -23,7 +23,7 @@ const CursorOverlay = () => {
             width="18"
             height="18"
             viewBox="0 0 24 24"
-            fill="blue"
+            fill={cursor.color}
           >
             <path d="M3 2L20 12L13 14L11 21L3 2Z" />
           </svg>
@@ -34,7 +34,7 @@ const CursorOverlay = () => {
               marginLeft: 8,
               marginTop: -4,
               padding: "2px 6px",
-              background: cursor.color,
+              background: `${cursor.color}33`,
               color: "black",
               fontSize: "12px",
               borderRadius: 6,

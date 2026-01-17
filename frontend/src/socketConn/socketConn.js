@@ -1,7 +1,7 @@
 import {io} from "socket.io-client";
 import { store } from "../store/store";
 import { setElements, updateElement } from "../whiteboard/whiteboardSlice";
-import { updateCursorPosition } from "../cursorOverlay/cursorSlice";
+import { updateCursorPosition, removeCursorPosition } from "../cursorOverlay/cursorSlice";
 
 let socket;
 
@@ -27,6 +27,10 @@ export const connectWithSocketServer = () => {
 
     socket.on('cursor-position', (cursorData) => {
         store.dispatch(updateCursorPosition(cursorData));
+    });
+
+    socket.on('user-disconnected', (disconnectedUserId) => {
+        store.dispatch(removeCursorPosition(disconnectedUserId));
     });
 };
 

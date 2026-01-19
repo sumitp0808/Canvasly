@@ -2,6 +2,7 @@ import {io} from "socket.io-client";
 import { store } from "../store/store";
 import { setElements, updateElement } from "../whiteboard/whiteboardSlice";
 import { updateCursorPosition, removeCursorPosition } from "../cursorOverlay/cursorSlice";
+import { userJoined, userLeft } from "../presence/presenceSlice";
 
 let socket;
 
@@ -28,9 +29,20 @@ export const connectWithSocketServer = () => {
     socket.on('cursor-position', (cursorData) => {
         store.dispatch(updateCursorPosition(cursorData));
     });
+    
+    socket.on('user-joined', (user) => {
+        store.dispatch(userJoined(user));
+    });
+
+    socket.on("room-users", (users) => {
+        users.forEach(user => {
+        store.dispatch(userJoined(user));
+        });
+    });
 
     socket.on('user-disconnected', (disconnectedUserId) => {
         store.dispatch(removeCursorPosition(disconnectedUserId));
+        store.dispatch(userLeft(disconnectedUserId));
     });
 };
 
@@ -46,3 +58,7 @@ export const emitClearWhiteboard = () => {
 export const emitCursorPosition = (cursorData) => {
     socket.emit('cursor-position', cursorData);
 }
+
+export const joinRoom = ({roomId, user}) => {
+    socket.emit('join-room', {roomId, user});
+};

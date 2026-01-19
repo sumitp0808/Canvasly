@@ -10,13 +10,14 @@ const cursorSlice = createSlice({
     initialState,
     reducers: {
         updateCursorPosition: (state, action) => {
-            const {x, y, userId} = action.payload;
+            const {x, y, userId, name} = action.payload;
 
             const index = state.cursors.findIndex((c) => c.userId === userId);
 
             if(index !== -1){
                 state.cursors[index] = {
                     userId,
+                    name,
                     x,
                     y,
                     color: state.cursors[index].color,
@@ -31,6 +32,7 @@ const cursorSlice = createSlice({
                 const color = cursorColors[Math.abs(hash) % cursorColors.length];
                 state.cursors.push({
                     userId,
+                    name,
                     x,
                     y,
                     color,

@@ -9,6 +9,7 @@ const server = http.createServer(app);
 app.use(cors());
 
 let elements = [];
+const roomUsers = {};  // roomId -> [{ userId, name, avatar }]
 
 const io = new Server(server, {
     cors: {
@@ -20,30 +21,67 @@ const io = new Server(server, {
 
 io.on('connection', (socket) => {
     console.log('user connected', socket.id);
-    io.to(socket.id).emit('whiteboard-state', elements);
+
+    socket.on('join-room', ({roomId, user}) => {
+        socket.join(roomId);
+        socket.roomId = roomId;
+        socket.user = user;
+        
+        const newUser = {
+            userId: socket.id,
+            name: user.name,
+            avatar: user.avatar,
+        };
+        
+        if(!roomUsers[roomId]){
+            roomUsers[roomId] = [];
+        }
+
+        //Send existing users to the new user
+        socket.emit("room-users", roomUsers[roomId]);
+
+        //Add new user to room
+        roomUsers[roomId].push(newUser);
+
+        io.to(roomId).emit('user-joined', newUser);
+
+        io.to(roomId).emit('whiteboard-state', elements);
+    });
 
     //emit listeners
     socket.on('element-update', (elementData) => {
         updateElementInElements(elementData);
 
-        socket.broadcast.emit('element-update', elementData);
+        socket.to(socket.roomId).emit('element-update', elementData);
     });
 
     socket.on('whiteboard-clear', () => {
         elements = [];
 
-        socket.broadcast.emit('whiteboard-clear');
+        socket.to(socket.roomId).emit('whiteboard-clear');
     });
 
     socket.on('cursor-position', (cursorData) => {
-        socket.broadcast.emit('cursor-position', {
+        socket.to(socket.roomId).emit('cursor-position', {
             ...cursorData,
             userId: socket.id,
         });
     });
 
     socket.on('disconnect', () => {
-        socket.broadcast.emit('user-disconnected', socket.id);
+        const roomId = socket.roomId;
+        if(!roomId || !roomUsers[roomId]) return;
+
+        roomUsers[roomId] = roomUsers[roomId].filter(
+            u => u.userId !== socket.id
+        );
+
+        socket.to(roomId).emit('user-disconnected', socket.id);
+
+        //cleanup
+        if (roomUsers[roomId].length === 0) {
+            delete roomUsers[roomId];
+        }
     });
 });
 

@@ -13,6 +13,8 @@ let emitCursor = true;
 let lastCursorPosition;
 
 const Whiteboard = () => {
+  const user = useSelector((state) => state.user);
+
   const canvasRef = useRef();
   const textareaRef = useRef(); // for text insertion tool
 
@@ -136,9 +138,9 @@ const Whiteboard = () => {
 
     //cursor update
 
-    lastCursorPosition = {x: clientX, y: clientY};
+    lastCursorPosition = {x: clientX, y: clientY, name: user.name};
     if(emitCursor) {
-      emitCursorPosition({x: clientX, y: clientY});
+      emitCursorPosition({x: clientX, y: clientY, name: user.name});
       emitCursor = false;
 
       //updating cursor position only after some delay

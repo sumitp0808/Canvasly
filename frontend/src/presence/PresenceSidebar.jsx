@@ -1,44 +1,72 @@
 import { useSelector } from "react-redux";
 import { useState } from "react";
+import { FiUsers } from "react-icons/fi";
 
 const PresenceSidebar = () => {
   const users = useSelector((state) => state.presence.users);
   const me = useSelector((state) => state.user);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   return (
     <>
-      {/* Toggle button */}
+      {/* Top-right toggle button */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed top-20 right-4 z-50 bg-blue-600 text-white px-3 py-2 rounded-lg shadow"
+        className="
+    fixed top-4 right-4 z-50
+    bg-white text-gray-900
+    dark:bg-neutral-800 dark:text-gray-100
+    border border-gray-300 dark:border-neutral-700
+    p-2 rounded-full shadow-lg
+    hover:scale-105 transition
+  "
+        title="Users"
       >
-        {open ? "Hide Users" : "Show Users"}
+        <FiUsers size={22} />
       </button>
 
-      {/* Sidebar */}
-      {open && (
-        <div className="fixed top-0 right-0 h-full w-64 bg-white shadow-xl z-40 p-4">
-          <h3 className="text-lg font-bold mb-4">Users</h3>
+      {/* Backdrop (optional but recommended) */}
+      <div
+        onClick={() => setOpen(false)}
+        className={`fixed inset-0 z-40 bg-black/20 transition-opacity
+          ${open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}
+        `}
+      />
 
-          <ul className="space-y-2">
-            {users.map((u) => (
-              <li
-                key={u.userId}
-                className={`flex items-center gap-2 p-2 rounded
-                  ${u.userId === me.userId ? "bg-blue-100" : "bg-gray-100"}
-                `}
-              >
-                <span className="text-xl">{u.avatar}</span>
-                <span className="font-medium">
-                  {u.name}
-                  {u.userId === me.userId && " (You)"}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {/* Sliding drawer */}
+      <div
+        className={`fixed top-0 right-0 h-full w-64
+    bg-white text-gray-900
+    dark:bg-neutral-900 dark:text-gray-100
+    shadow-xl z-50 p-4
+    transform transition-transform duration-300 ease-in-out
+    ${open ? "translate-x-0" : "translate-x-full"}`}
+      >
+        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+          <FiUsers />
+          Users
+        </h3>
+
+        <ul className="space-y-2">
+          {users.map((u) => (
+            <li
+              key={u.userId}
+              className={`flex items-center gap-2 p-2 rounded
+                text-gray-900 dark:text-gray-100
+                ${u.userId === me.userId
+                  ? "bg-blue-100 dark:bg-blue-900/40"
+                  : "bg-gray-100 dark:bg-neutral-800"}
+              `}
+            >
+              <span className="text-xl">{u.avatar}</span>
+              <span className="font-medium">
+                {u.name}
+                {u.userId === me.userId && " (You)"}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </>
   );
 };

@@ -30,7 +30,7 @@ const Lobby = () => {
   return (
     <div className="h-screen flex items-center justify-center">
       <div className="bg-white p-6 rounded-xl shadow-xl w-80">
-        <h2 className="text-xl font-bold mb-4">Join Whiteboard</h2>
+        <h2 className="text-xl font-bold mb-4 ">Collaborate Now</h2>
 
         <input
           placeholder="Your name"

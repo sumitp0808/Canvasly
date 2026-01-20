@@ -8,7 +8,7 @@ const server = http.createServer(app);
 
 app.use(cors());
 
-let elements = [];
+const roomElements = {}; // roomId -> elements
 const roomUsers = {};  // roomId -> [{ userId, name, avatar }]
 
 const io = new Server(server, {
@@ -33,8 +33,12 @@ io.on('connection', (socket) => {
             avatar: user.avatar,
         };
         
+        //initializations
         if(!roomUsers[roomId]){
             roomUsers[roomId] = [];
+        }
+        if (!roomElements[roomId]) {
+            roomElements[roomId] = [];
         }
 
         //Send existing users to the new user
@@ -45,18 +49,18 @@ io.on('connection', (socket) => {
 
         io.to(roomId).emit('user-joined', newUser);
 
-        io.to(roomId).emit('whiteboard-state', elements);
+        io.to(roomId).emit('whiteboard-state', roomElements[roomId]);
     });
 
     //emit listeners
     socket.on('element-update', (elementData) => {
-        updateElementInElements(elementData);
+        updateElementInElements(elementData, socket.roomId);
 
         socket.to(socket.roomId).emit('element-update', elementData);
     });
 
     socket.on('whiteboard-clear', () => {
-        elements = [];
+        roomElements[socket.roomId] = [];
 
         socket.to(socket.roomId).emit('whiteboard-clear');
     });
@@ -95,10 +99,10 @@ server.listen(PORT, () => {
     console.log("server is running on port", PORT);
 });
 
-const updateElementInElements = (elementData) => {
-    const index = elements.findIndex(el => el.id === elementData.id)
+const updateElementInElements = (elementData, roomId) => {
+    const index = roomElements[roomId].findIndex(el => el.id === elementData.id)
 
-    if(index === -1) return elements.push(elementData)
+    if(index === -1) return roomElements[roomId].push(elementData)
 
-    elements[index]  = elementData;
+    roomElements[roomId][index]  = elementData;
 }

@@ -19,14 +19,14 @@ const pathData = getSvgPathFromStroke(myStroke);
 
 const myPath = new Path2D(pathData);
 //fill styles will go here
-context.fillStyle = "orange";
+context.fillStyle = element.strokeColor || "orange";
 context.fill(myPath);
 
 };
 
 const drawTextElement = (context, element) => {
     context.textBaseline = "top";
-    context.fillStyle = "green";
+    context.fillStyle = element.strokeColor || "green";
     context.font = '24px sans-serif';      //can vary text-styling later
     context.fillText(element.text, element.x1, element.y1);
 };

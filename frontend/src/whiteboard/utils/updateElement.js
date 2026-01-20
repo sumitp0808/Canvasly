@@ -11,6 +11,7 @@ export const updatePencilElementWhenMoving = ({index, newPoints}, elements) => {
     elementsCopy[index] = {
         ...elementsCopy[index],
         points: newPoints,
+        strokeColor: elementsCopy[index].strokeColor,
     };
 
     const updatedPencilElement = elementsCopy[index];
@@ -34,6 +35,7 @@ export const updateElement = ({index, id, x1, x2, y1, y2, type, text}, elements)
                 x2,
                 y2,
                 toolType : type,
+                strokeColor: elementsCopy[index].strokeColor,
             });
 
             elementsCopy[index] = updatedElement;
@@ -52,6 +54,7 @@ export const updateElement = ({index, id, x1, x2, y1, y2, type, text}, elements)
                         y: y2,
                     },
                 ],
+                strokeColor: elementsCopy[index].strokeColor,
             };
 
             const updatedPencilElement = elementsCopy[index];
@@ -71,6 +74,7 @@ export const updateElement = ({index, id, x1, x2, y1, y2, type, text}, elements)
                     y2: y1 + textHeight,
                     toolType: type,
                     text,
+                    strokeColor: elementsCopy[index].strokeColor,
                 }),
             };
             const updatedTextElement = elementsCopy[index];

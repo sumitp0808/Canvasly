@@ -1,4 +1,4 @@
-import Toolbar from "./ToolBar"
+import Toolbar from "./tools/ToolBar"
 import { useRef, useLayoutEffect, useState} from "react";
 import rough from "roughjs";
 import { useSelector, useDispatch } from "react-redux";
@@ -14,6 +14,7 @@ let lastCursorPosition;
 
 const Whiteboard = () => {
   const user = useSelector((state) => state.user);
+  const strokeColor = useSelector((state) => state.whiteboard.strokeColor);
 
   const canvasRef = useRef();
   const textareaRef = useRef(); // for text insertion tool
@@ -60,6 +61,7 @@ const Whiteboard = () => {
           y2: clientY,
           toolType,
           id: uuid(),
+          strokeColor,
         });
         setAction(actions.DRAWING);
         setSelectedElement(element);
@@ -74,6 +76,7 @@ const Whiteboard = () => {
         y2: clientY,
         toolType,
         id: uuid(),
+        strokeColor,
         });
 
         setAction(actions.WRITING);

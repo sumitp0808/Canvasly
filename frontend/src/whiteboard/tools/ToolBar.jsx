@@ -1,4 +1,4 @@
-import { toolTypes } from './constants';
+import { toolTypes } from '../constants';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {
@@ -8,12 +8,13 @@ FaRedo,
 FaEraser,
 FaMousePointer,
 } from 'react-icons/fa';
-import { BsSquare, BsCircle, BsPalette, BsSlash } from 'react-icons/bs';
+import { BsSquare, BsCircle, BsSlash } from 'react-icons/bs';
 import { MdDeleteSweep, MdTextFields } from "react-icons/md";
 
 
-import { setToolType, setElements } from './whiteboardSlice';
-import { emitClearWhiteboard } from '../socketConn/socketConn';
+import { setToolType, setElements } from '../whiteboardSlice';
+import { emitClearWhiteboard } from '../../socketConn/socketConn';
+import ColorPickerTool from './ColorPickerTool';
 
 const IconButton = ({icon, type}) => {
   const dispatch = useDispatch();
@@ -46,7 +47,6 @@ const tools = [
 { icon: <MdTextFields />, label: 'Text', type: toolTypes.TEXT },
 { icon: <BsSquare />, label: 'Rectangle', type: toolTypes.RECTANGLE },
 { icon: <BsCircle />, label: 'Ellipse', type: toolTypes.ELLIPSE },
-{ icon: <BsPalette />, label: 'Color', type: toolTypes.COLOR },
 { icon: <FaEraser />, label: 'Eraser', type: toolTypes.ERASER },
 { icon: <FaUndo />, label: 'Undo', type: toolTypes.UNDO },
 { icon: <FaRedo />, label: 'Redo', type: toolTypes.REDO },
@@ -71,6 +71,8 @@ return (
               shadow-lg backdrop-blur-md rounded-full 
               px-4 py-2 flex gap-3 items-center"
  >
+  <ColorPickerTool />
+
 {tools.map((tool) => (
   <IconButton 
     key={tool.type}

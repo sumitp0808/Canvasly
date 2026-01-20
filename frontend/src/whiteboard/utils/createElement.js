@@ -3,19 +3,19 @@ import { toolTypes } from "../constants";
 
 const generator = rough.generator();
 
-const generateRectangle = ({x1, y1, x2, y2}) => {
+const generateRectangle = ({x1, y1, x2, y2, strokeColor}) => {
     return generator.rectangle(x1, y1, x2-x1, y2-y1, {
-        stroke:"blue",                  //will vary later using GUI
+        stroke: strokeColor,                  //will vary later using GUI
     });
 };
 
-const generateLine = ({x1, y1, x2, y2}) => {
+const generateLine = ({x1, y1, x2, y2, strokeColor}) => {
     return generator.line(x1, y1, x2, y2, {
-        stroke:"red",                  //will vary later
+        stroke: strokeColor,                  //will vary later
     });
 };
 
-const generateEllipse = ({x1, y1, x2, y2}) => {
+const generateEllipse = ({x1, y1, x2, y2, strokeColor}) => {
     const width = Math.abs(x2-x1);
     const height = Math.abs(y2-y1);
 
@@ -23,16 +23,16 @@ const generateEllipse = ({x1, y1, x2, y2}) => {
     const centerY = y1 + (y2-y1)/2;
 
     return generator.ellipse(centerX, centerY, width, height, {
-        stroke : "purple",         //will vary later
+        stroke : strokeColor,         //will vary later
     });
 }
 
-export const createElement = ({x1, y1, x2, y2, toolType, id, text}) => {
+export const createElement = ({x1, y1, x2, y2, toolType, id, text, strokeColor}) => {
     let roughElement;
 
     switch(toolType) {
         case toolTypes.RECTANGLE:
-            roughElement = generateRectangle({x1, y1, x2, y2});
+            roughElement = generateRectangle({x1, y1, x2, y2, strokeColor});
             return {
                 id: id,
                 roughElement,
@@ -41,9 +41,10 @@ export const createElement = ({x1, y1, x2, y2, toolType, id, text}) => {
                 y1,
                 x2,
                 y2,
+                strokeColor,
             };
         case toolTypes.ELLIPSE:
-            roughElement = generateEllipse({x1, y1, x2, y2});
+            roughElement = generateEllipse({x1, y1, x2, y2, strokeColor});
             return {
                 id,
                 roughElement,
@@ -52,9 +53,10 @@ export const createElement = ({x1, y1, x2, y2, toolType, id, text}) => {
                 y1,
                 x2,
                 y2,
+                strokeColor,
             };
         case toolTypes.LINE:
-            roughElement = generateLine({x1, y1, x2, y2});
+            roughElement = generateLine({x1, y1, x2, y2, strokeColor});
             return {
                 id: id,
                 roughElement,
@@ -63,12 +65,14 @@ export const createElement = ({x1, y1, x2, y2, toolType, id, text}) => {
                 y1,
                 x2,
                 y2,
+                strokeColor,
             };
         case toolTypes.PENCIL:
             return {
                 id,
                 type: toolType,
                 points: [{x: x1, y: y1}],
+                strokeColor,
             };
         case toolTypes.TEXT:
             return {
@@ -78,7 +82,8 @@ export const createElement = ({x1, y1, x2, y2, toolType, id, text}) => {
                 y1,
                 x2,
                 y2,
-                text: text || ""
+                text: text || "",
+                strokeColor,
             }
         default:
             throw new Error("No valid toolType");

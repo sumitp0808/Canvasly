@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   tool: null,
   elements: [],
+  strokeColor: "#000000", //default color black
 };
 
 const whiteBoardSlice = createSlice({
@@ -26,8 +27,11 @@ const whiteBoardSlice = createSlice({
     setElements: (state, action) => {
       state.elements = action.payload;
     },
+    setStrokeColor: (state, action) => {
+      state.strokeColor = action.payload;
+    },
   },
 }); 
 
-export const {setToolType, updateElement, setElements} = whiteBoardSlice.actions;
+export const {setToolType, updateElement, setElements, setStrokeColor} = whiteBoardSlice.actions;
 export default whiteBoardSlice.reducer;

@@ -21,6 +21,7 @@ const Lobby = () => {
 
   const join = (roomId) => {
     if (!name) return alert("Enter name");
+    if(!roomId) return alert("Valid roomId is required to join");
 
     dispatch(setUser({ name, avatar, roomId }));
     navigate(`/room/${roomId}`);

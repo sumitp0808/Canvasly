@@ -8,11 +8,11 @@ import PresenceSidebar from "../presence/PresenceSidebar";
 
 const Room = () => {
   const { roomId } = useParams();
-  const user = useSelector((state) => state.user);
+  // const user = useSelector((state) => state.user);
 
   useEffect(() => {
     connectWithSocketServer();
-    joinRoom({ roomId, user });
+    joinRoom({roomId});
   }, []);
 
   return (

@@ -3,15 +3,16 @@ import { store } from "../store/store";
 import { setElements, updateElement } from "../whiteboard/whiteboardSlice";
 import { updateCursorPosition, removeCursorPosition } from "../cursorOverlay/cursorSlice";
 import { userJoined, userLeft } from "../presence/presenceSlice";
+import {setUserId} from '../store/userSlice';
 
 let socket;
-
 export const connectWithSocketServer = () => {
     socket = io("http://localhost:3000");
 
     //listens from server
     socket.on("connect", () => {
         console.log("connected to socketio server");
+        store.dispatch(setUserId(socket.id));
     });
 
     socket.on('whiteboard-state', elements => {
@@ -59,6 +60,8 @@ export const emitCursorPosition = (cursorData) => {
     socket.emit('cursor-position', cursorData);
 }
 
-export const joinRoom = ({roomId, user}) => {
+export const joinRoom = ({roomId}) => {
+    const state = store.getState();
+    const user = state.user;
     socket.emit('join-room', {roomId, user});
 };

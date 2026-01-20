@@ -77,7 +77,7 @@ io.on('connection', (socket) => {
         );
 
         socket.to(roomId).emit('user-disconnected', socket.id);
-
+        socket.leave(roomId);
         //cleanup
         if (roomUsers[roomId].length === 0) {
             delete roomUsers[roomId];

@@ -4,6 +4,7 @@ import { setElements, updateElement } from "../whiteboard/whiteboardSlice";
 import { updateCursorPosition, removeCursorPosition } from "../cursorOverlay/cursorSlice";
 import { userJoined, userLeft } from "../presence/presenceSlice";
 import {setUserId} from '../store/userSlice';
+import { addMessage } from "../chat/chatSlice";
 
 let socket;
 export const connectWithSocketServer = () => {
@@ -45,6 +46,13 @@ export const connectWithSocketServer = () => {
         store.dispatch(removeCursorPosition(disconnectedUserId));
         store.dispatch(userLeft(disconnectedUserId));
     });
+
+    //chat
+    socket.on("chat-message", (msg) => {
+        //msg - > {id, message, user, timestamp}
+        store.dispatch(addMessage(msg));
+    });
+
 };
 
 //emits to server
@@ -64,4 +72,9 @@ export const joinRoom = ({roomId}) => {
     const state = store.getState();
     const user = state.user;
     socket.emit('join-room', {roomId, user});
+};
+
+export const emitChatMessage = (data) => {
+    //data -> {roomId, message, user}
+    socket.emit("chat-message", data);
 };

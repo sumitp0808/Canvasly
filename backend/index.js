@@ -87,6 +87,18 @@ io.on('connection', (socket) => {
             delete roomUsers[roomId];
         }
     });
+
+    //chat feature
+    socket.on("chat-message", ({ roomId, message, user }) => {
+        io.to(roomId).emit("chat-message", {
+            id: Date.now(),
+            message,
+            user,
+            timestamp: Date.now(),
+        });
+    });
+
+
 });
 
 app.get('/', (req, res) => {

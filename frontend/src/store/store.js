@@ -3,6 +3,7 @@ import whiteBoardSliceReducer from '../whiteboard/whiteboardSlice'
 import cursorSliceReducer from '../cursorOverlay/cursorSlice'
 import userSliceReducer from './userSlice'
 import presenceSliceReducer from '../presence/presenceSlice'
+import chatSliceReducer from '../chat/chatSlice'
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     cursor: cursorSliceReducer,
     user: userSliceReducer,
     presence: presenceSliceReducer,
+    chat: chatSliceReducer,
   },
   middleware : (getDefaultMiddleware) => 
     getDefaultMiddleware({

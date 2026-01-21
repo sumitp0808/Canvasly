@@ -5,6 +5,7 @@ import Whiteboard from "../whiteboard/Whiteboard";
 import CursorOverlay from "../cursorOverlay/CursorOverlay";
 import { connectWithSocketServer, joinRoom } from "../socketConn/socketConn";
 import PresenceSidebar from "../presence/PresenceSidebar";
+import ChatSidebar from "../chat/chatSidebar";
 
 const Room = () => {
   const { roomId } = useParams();
@@ -20,6 +21,7 @@ const Room = () => {
       <Whiteboard />
       <CursorOverlay />
       <PresenceSidebar />
+      <ChatSidebar />
     </>
   );
 };

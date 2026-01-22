@@ -68,6 +68,10 @@ export const emitCursorPosition = (cursorData) => {
     socket.emit('cursor-position', cursorData);
 }
 
+export const emitFullState = (elements) => {
+    socket.emit('whiteboard-state', elements);
+};
+
 export const joinRoom = ({roomId}) => {
     const state = store.getState();
     const user = state.user;

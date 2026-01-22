@@ -59,6 +59,12 @@ io.on('connection', (socket) => {
         socket.to(socket.roomId).emit('element-update', elementData);
     });
 
+    socket.on('whiteboard-state', (elements) => {
+        roomElements[socket.roomId] = elements;
+
+        socket.to(socket.roomId).emit('whiteboard-state', elements);
+    });
+
     socket.on('whiteboard-clear', () => {
         roomElements[socket.roomId] = [];
 

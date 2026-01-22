@@ -1,12 +1,14 @@
+import { store } from "../store/store";
 import Toolbar from "./tools/ToolBar"
-import { useRef, useLayoutEffect, useState} from "react";
+import { useRef, useLayoutEffect, useState, useEffect} from "react";
 import rough from "roughjs";
 import { useSelector, useDispatch } from "react-redux";
 import { toolTypes, actions, cursorPositions } from "./constants";
 import { adjustElementCoordinates, adjustmentRequired, createElement , drawElement, updateElement, getElementAtPosition, getCursorForPosition, getResizedCoordinates, updatePencilElementWhenMoving} from "./utils";
 import {v4 as uuid} from 'uuid';
 import {updateElement as updateElementInStore} from "./whiteboardSlice";
-import { emitCursorPosition } from "../socketConn/socketConn";
+import { pushToHistory, undo, redo } from "./whiteboardSlice";
+import { emitCursorPosition, emitFullState } from "../socketConn/socketConn";
 
 //for cursors
 let emitCursor = true;
@@ -26,6 +28,26 @@ const Whiteboard = () => {
   const [selectedElement, setSelectedElement] = useState(null);
 
   const dispatch = useDispatch();
+
+  //to allow undo redo by shortcuts
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.ctrlKey && e.key === "z") {
+        e.preventDefault();
+        dispatch(undo());
+        emitFullState(store.getState().whiteboard.elements);
+      }
+      if (e.ctrlKey && (e.key === "y" || (e.shiftKey && e.key === "Z"))) {
+        e.preventDefault();
+        dispatch(redo());
+        emitFullState(store.getState().whiteboard.elements);
+      }
+    };
+
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
+
 
   useLayoutEffect(() => {
     const canvas = canvasRef.current;
@@ -54,6 +76,8 @@ const Whiteboard = () => {
       case toolTypes.ELLIPSE:
       case toolTypes.LINE:
       case toolTypes.PENCIL: {
+        dispatch(pushToHistory()); //has tool selectd & mouseDown
+
         const element = createElement({
           x1: clientX,
           y1: clientY,
@@ -69,6 +93,8 @@ const Whiteboard = () => {
         break;
       }
       case toolTypes.TEXT: {
+        dispatch(pushToHistory()); //has tool selectd & mouseDown
+
         const element = createElement({
         x1: clientX,
         y1: clientY,
@@ -85,6 +111,8 @@ const Whiteboard = () => {
         break;
       }
       case toolTypes.SELECTION: {
+        dispatch(pushToHistory()); //has tool selectd & mouseDown
+
         const element = getElementAtPosition(clientX, clientY, elements)
         
         //for shapes

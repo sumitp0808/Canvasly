@@ -1,5 +1,7 @@
 import { toolTypes } from '../constants';
 import {useDispatch, useSelector} from 'react-redux';
+import { undo, redo } from '../whiteboardSlice';
+import { store } from '../../store/store';
 
 import {
 FaPencilAlt,
@@ -12,8 +14,8 @@ import { BsSquare, BsCircle, BsSlash } from 'react-icons/bs';
 import { MdDeleteSweep, MdTextFields } from "react-icons/md";
 
 
-import { setToolType, setElements } from '../whiteboardSlice';
-import { emitClearWhiteboard } from '../../socketConn/socketConn';
+import { setToolType, setElements, pushToHistory } from '../whiteboardSlice';
+import { emitClearWhiteboard, emitFullState } from '../../socketConn/socketConn';
 import ColorPickerTool from './ColorPickerTool';
 
 const IconButton = ({icon, type}) => {
@@ -48,18 +50,27 @@ const tools = [
 { icon: <BsSquare />, label: 'Rectangle', type: toolTypes.RECTANGLE },
 { icon: <BsCircle />, label: 'Ellipse', type: toolTypes.ELLIPSE },
 { icon: <FaEraser />, label: 'Eraser', type: toolTypes.ERASER },
-{ icon: <FaUndo />, label: 'Undo', type: toolTypes.UNDO },
-{ icon: <FaRedo />, label: 'Redo', type: toolTypes.REDO },
 ];
 
 const Toolbar = () => {
-  const activeTool = useSelector((state) => state.whiteboard.tool);
+  const { history, redoStack } = useSelector((state) => state.whiteboard);
+
   const dispatch = useDispatch();
 
   const handleClearCanvas = () => {
+    dispatch(pushToHistory()); //going to clear? store this state for undo
     dispatch(setElements([]));   //client side clearing
 
     emitClearWhiteboard();       //for server side clearing
+  };
+
+  const handleUndo = () => {
+    dispatch(undo());
+    emitFullState(store.getState().whiteboard.elements);
+  };
+  const handleRedo = () => {
+    dispatch(redo());
+    emitFullState(store.getState().whiteboard.elements);
   };
 
 return ( 
@@ -79,7 +90,34 @@ return (
     icon={tool.icon}
     type={tool.type}
   />
-))} </div>
+))} 
+
+    {/* UNDO */}
+    <button onClick = {handleUndo} title="undo"
+      disabled={history.length === 0}
+      className={`flex items-center justify-center text-lg p-2 rounded-full transition-all duration-300 ease-in-out
+           text-gray-600 dark:text-gray-200
+          ${history.length === 0
+          ? "opacity-40 cursor-not-allowed"
+          : "hover:bg-gray-100 dark:hover:bg-neutral-700 hover:scale-105"}
+          `}
+    >
+      <FaUndo />
+    </button>
+    {/* REDO */}
+    <button onClick = {handleRedo} title="redo"
+      disabled={redoStack.length === 0}
+      className={`flex items-center justify-center text-lg p-2 rounded-full transition-all duration-300 ease-in-out
+           text-gray-600 dark:text-gray-200
+          ${redoStack.length === 0
+          ? "opacity-40 cursor-not-allowed"
+          : "hover:bg-gray-100 dark:hover:bg-neutral-700 hover:scale-105"}
+          `}
+    >
+      <FaRedo />
+    </button>
+</div>
+
 <button
         onClick={handleClearCanvas}
         className="

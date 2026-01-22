@@ -19,6 +19,8 @@ const Whiteboard = () => {
   const user = useSelector((state) => state.user);
   const strokeColor = useSelector((state) => state.whiteboard.strokeColor);
   const strokeWidth = useSelector((state) => state.whiteboard.strokeWidth);
+  const fillColor = useSelector((state) => state.whiteboard.fillColor);
+  const fillStyle = useSelector((state) => state.whiteboard.fillStyle);
 
   const canvasRef = useRef();
   const textareaRef = useRef(); // for text insertion tool
@@ -90,6 +92,8 @@ const Whiteboard = () => {
           id: uuid(),
           strokeColor,
           strokeWidth,
+          fillColor,
+          fillStyle,
         });
         setAction(actions.DRAWING);
         setSelectedElement(element);

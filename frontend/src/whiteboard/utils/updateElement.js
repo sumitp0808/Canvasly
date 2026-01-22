@@ -37,6 +37,8 @@ export const updateElement = ({index, id, x1, x2, y1, y2, type, text}, elements)
                 toolType : type,
                 strokeColor: elementsCopy[index].strokeColor,
                 strokeWidth: elementsCopy[index].strokeWidth,
+                fillColor: elementsCopy[index].fillColor,
+                fillStyle: elementsCopy[index].fillStyle,
             });
 
             elementsCopy[index] = updatedElement;
@@ -55,8 +57,6 @@ export const updateElement = ({index, id, x1, x2, y1, y2, type, text}, elements)
                         y: y2,
                     },
                 ],
-                // strokeColor: elementsCopy[index].strokeColor,
-                // strokeWidth: elementsCopy[index].strokeWidth,
             };
 
             const updatedPencilElement = elementsCopy[index];

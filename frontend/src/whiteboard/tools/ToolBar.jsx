@@ -18,6 +18,7 @@ import { setToolType, setElements, pushToHistory } from '../whiteboardSlice';
 import { emitClearWhiteboard, emitFullState } from '../../socketConn/socketConn';
 import ColorPickerTool from './ColorPickerTool';
 import StrokeWidthTool from './StrokeWidthTool';
+import FillTool from './fillTool/FillTool';
 
 const IconButton = ({icon, type}) => {
   const dispatch = useDispatch();
@@ -85,6 +86,7 @@ return (
  >
   <ColorPickerTool />
   <StrokeWidthTool />
+  <FillTool />
 
 {tools.map((tool) => (
   <IconButton 

@@ -4,6 +4,7 @@ const initialState = {
   tool: null,
   elements: [],
   strokeColor: "#000000", //default color black
+  strokeWidth: 3,         //default stroke width
   history: [],            //undo stack
   redoStack: [],          //redo stack
 };
@@ -38,6 +39,11 @@ const whiteBoardSlice = createSlice({
       state.strokeColor = action.payload;
     },
 
+    //strokeWidth reducer
+    setStrokeWidth: (state, action) => {
+      state.strokeWidth = action.payload;
+    },
+
     //history reducers(for undo-redo)
     pushToHistory: (state) => {
       state.history.push(JSON.stringify(state.elements));
@@ -58,5 +64,5 @@ const whiteBoardSlice = createSlice({
   },
 }); 
 
-export const {setToolType, updateElement, setElements, setStrokeColor, pushToHistory, undo, redo} = whiteBoardSlice.actions;
+export const {setToolType, updateElement, setElements, setStrokeColor, setStrokeWidth, pushToHistory, undo, redo} = whiteBoardSlice.actions;
 export default whiteBoardSlice.reducer;

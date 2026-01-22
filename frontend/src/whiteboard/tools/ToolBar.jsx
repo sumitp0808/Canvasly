@@ -17,6 +17,7 @@ import { MdDeleteSweep, MdTextFields } from "react-icons/md";
 import { setToolType, setElements, pushToHistory } from '../whiteboardSlice';
 import { emitClearWhiteboard, emitFullState } from '../../socketConn/socketConn';
 import ColorPickerTool from './ColorPickerTool';
+import StrokeWidthTool from './StrokeWidthTool';
 
 const IconButton = ({icon, type}) => {
   const dispatch = useDispatch();
@@ -83,6 +84,7 @@ return (
               px-4 py-2 flex gap-3 items-center"
  >
   <ColorPickerTool />
+  <StrokeWidthTool />
 
 {tools.map((tool) => (
   <IconButton 

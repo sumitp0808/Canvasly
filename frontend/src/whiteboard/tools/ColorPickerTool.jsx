@@ -9,7 +9,7 @@ const ColorPickerTool = () => {
   const strokeColor = useSelector((state) => state.whiteboard.strokeColor);
 
   return (
-    <div className="relative">
+    <div className="relative" title="color">
       <button
         title="COLOR"
         className={`flex items-center justify-center text-lg p-2 rounded-full

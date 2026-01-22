@@ -4,8 +4,8 @@ import { getSvgPathFromStroke } from "./getSVGPathFromStroke";
 
 const drawPencilElement = (context, element) => {
     //vary specifics later
-    const myStroke = getStroke(element.points, {
-  size: 4,
+  const myStroke = getStroke(element.points, {
+  size: element.strokeWidth,
   thinning: 0.6,
   smoothing: 0.8,
   streamline: 0.5,

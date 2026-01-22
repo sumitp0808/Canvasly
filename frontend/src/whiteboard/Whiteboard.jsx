@@ -7,6 +7,7 @@ import { toolTypes, actions, cursorPositions } from "./constants";
 import { adjustElementCoordinates, adjustmentRequired, createElement , drawElement, updateElement, getElementAtPosition, getCursorForPosition, getResizedCoordinates, updatePencilElementWhenMoving} from "./utils";
 import {v4 as uuid} from 'uuid';
 import {updateElement as updateElementInStore} from "./whiteboardSlice";
+import { setElements } from "./whiteboardSlice";
 import { pushToHistory, undo, redo } from "./whiteboardSlice";
 import { emitCursorPosition, emitFullState } from "../socketConn/socketConn";
 
@@ -17,6 +18,7 @@ let lastCursorPosition;
 const Whiteboard = () => {
   const user = useSelector((state) => state.user);
   const strokeColor = useSelector((state) => state.whiteboard.strokeColor);
+  const strokeWidth = useSelector((state) => state.whiteboard.strokeWidth);
 
   const canvasRef = useRef();
   const textareaRef = useRef(); // for text insertion tool
@@ -62,6 +64,7 @@ const Whiteboard = () => {
 
   }, [elements]);
 
+  //Mouse Down
   const handleMouseDown = (event) => {
     const {clientX, clientY} = event;
 
@@ -86,6 +89,7 @@ const Whiteboard = () => {
           toolType,
           id: uuid(),
           strokeColor,
+          strokeWidth,
         });
         setAction(actions.DRAWING);
         setSelectedElement(element);
@@ -133,6 +137,19 @@ const Whiteboard = () => {
 
           setSelectedElement({ ...element, xOffsets, yOffsets});
         }
+        break;
+      }
+      //eraser
+      case toolTypes.ERASER: {
+        const element = getElementAtPosition(clientX, clientY, elements);
+        if(!element) return;
+
+        dispatch(pushToHistory());
+
+        const newElements = elements.filter((el) => el.id !== element.id);
+
+        dispatch(setElements(newElements));
+        emitFullState(newElements);
 
         break;
       }

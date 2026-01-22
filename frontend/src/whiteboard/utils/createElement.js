@@ -3,19 +3,21 @@ import { toolTypes } from "../constants";
 
 const generator = rough.generator();
 
-const generateRectangle = ({x1, y1, x2, y2, strokeColor}) => {
+const generateRectangle = ({x1, y1, x2, y2, strokeColor, strokeWidth}) => {
     return generator.rectangle(x1, y1, x2-x1, y2-y1, {
         stroke: strokeColor,                  //will vary later using GUI
+        strokeWidth: strokeWidth,
     });
 };
 
-const generateLine = ({x1, y1, x2, y2, strokeColor}) => {
+const generateLine = ({x1, y1, x2, y2, strokeColor, strokeWidth}) => {
     return generator.line(x1, y1, x2, y2, {
-        stroke: strokeColor,                  //will vary later
+        stroke: strokeColor,
+        strokeWidth: strokeWidth,                  //will vary later
     });
 };
 
-const generateEllipse = ({x1, y1, x2, y2, strokeColor}) => {
+const generateEllipse = ({x1, y1, x2, y2, strokeColor, strokeWidth}) => {
     const width = Math.abs(x2-x1);
     const height = Math.abs(y2-y1);
 
@@ -24,15 +26,16 @@ const generateEllipse = ({x1, y1, x2, y2, strokeColor}) => {
 
     return generator.ellipse(centerX, centerY, width, height, {
         stroke : strokeColor,         //will vary later
+        strokeWidth,
     });
 }
 
-export const createElement = ({x1, y1, x2, y2, toolType, id, text, strokeColor}) => {
+export const createElement = ({x1, y1, x2, y2, toolType, id, text, strokeColor, strokeWidth}) => {
     let roughElement;
 
     switch(toolType) {
         case toolTypes.RECTANGLE:
-            roughElement = generateRectangle({x1, y1, x2, y2, strokeColor});
+            roughElement = generateRectangle({x1, y1, x2, y2, strokeColor, strokeWidth});
             return {
                 id: id,
                 roughElement,
@@ -42,9 +45,10 @@ export const createElement = ({x1, y1, x2, y2, toolType, id, text, strokeColor})
                 x2,
                 y2,
                 strokeColor,
+                strokeWidth,
             };
         case toolTypes.ELLIPSE:
-            roughElement = generateEllipse({x1, y1, x2, y2, strokeColor});
+            roughElement = generateEllipse({x1, y1, x2, y2, strokeColor, strokeWidth});
             return {
                 id,
                 roughElement,
@@ -54,9 +58,10 @@ export const createElement = ({x1, y1, x2, y2, toolType, id, text, strokeColor})
                 x2,
                 y2,
                 strokeColor,
+                strokeWidth,
             };
         case toolTypes.LINE:
-            roughElement = generateLine({x1, y1, x2, y2, strokeColor});
+            roughElement = generateLine({x1, y1, x2, y2, strokeColor, strokeWidth});
             return {
                 id: id,
                 roughElement,
@@ -66,6 +71,7 @@ export const createElement = ({x1, y1, x2, y2, toolType, id, text, strokeColor})
                 x2,
                 y2,
                 strokeColor,
+                strokeWidth,
             };
         case toolTypes.PENCIL:
             return {
@@ -73,6 +79,8 @@ export const createElement = ({x1, y1, x2, y2, toolType, id, text, strokeColor})
                 type: toolType,
                 points: [{x: x1, y: y1}],
                 strokeColor,
+                strokeWidth,
+                strokeWidth,
             };
         case toolTypes.TEXT:
             return {

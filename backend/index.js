@@ -2,12 +2,27 @@ const express = require("express");
 const app = express();
 const http = require("http");
 const cors = require("cors");
+require('dotenv').config();
+const mongoose = require('mongoose');
+const authRouter = require('./routes/auth.routes');
 const {Server} = require("socket.io");
 
 const server = http.createServer(app);
 
 app.use(cors());
 
+/* --- ROUTES ---*/
+app.use(express.json());
+app.use('/auth', authRouter);
+
+
+/* --- MONGO DB CONNECT --- */
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log('✅ MongoDB Connected'))
+    .catch((err) => console.log('❌ MongoDB Connection Error:', err));
+
+
+/* --- LIVE PARTS --- */
 const roomElements = {}; // roomId -> elements
 const roomUsers = {};  // roomId -> [{ userId, name, avatar }]
 

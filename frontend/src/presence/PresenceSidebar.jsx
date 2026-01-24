@@ -58,8 +58,13 @@ const PresenceSidebar = () => {
                   : "bg-gray-100 dark:bg-neutral-800"}
               `}
             >
-              <span className="text-xl">{u.avatar}</span>
-              <span className="font-medium">
+              {/* Avatar */}
+                <img
+                  src={u.avatar}
+                  alt={u.name}
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+                <span className="font-medium">
                 {u.name}
                 {u.userId === me._id && " (You)"}
               </span>

@@ -1,9 +1,9 @@
 import { FiPlus } from "react-icons/fi";
 
-const NewBoardCard = ({ onCreate }) => {
+const NewBoardCard = ({ onClick }) => {
   return (
     <button
-      onClick={onCreate}
+      onClick={onClick}
       className="
         aspect-[4/3]
         rounded-xl

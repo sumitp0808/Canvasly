@@ -3,8 +3,10 @@ import {useEffect, useState} from 'react';
 import { logout } from "../auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import { FiLogOut } from "react-icons/fi";
-import BoardsGrid from "../components/boards/BoardsGrid";
+import BoardCard from "../components/boards/BoardCard";
+import NewBoardCard from "../components/boards/NewBoardCard";
 import { getMyBoards, createBoard, joinBoard } from "../utils/boardsApi";
+import NewBoardModal from "../components/boards/NewBoardModal";
 
 
 const Dashboard = () => {
@@ -14,6 +16,8 @@ const Dashboard = () => {
   const user = useSelector((state) => state.auth.user);
 
   const [boards, setBoards] = useState([]);
+  const [showNewBoard, setShowNewBoard] = useState(false);
+
 
   useEffect(() => {
     getMyBoards().then(setBoards);
@@ -26,19 +30,18 @@ const Dashboard = () => {
 
   const handleCreateBoard = async () => {
     const board = await createBoard();
+    setShowNewBoard(false);
     navigate(`/room/${board._id}`);
   };
 
-  const handleOpenBoard = (id) => {
-    navigate(`/room/${id}`);
-  };
-
-  const handleJoinBoard = async () => {
-    const boardId = prompt("Enter board ID");
-    if(!boardId) return;
-    
+  const handleJoinBoard = async (boardId) => {
     const board = await joinBoard(boardId);
+    setShowNewBoard(false);
     navigate(`/room/${board._id}`);
+  };
+  
+  const handleOpenBoard = (boardId) => {
+    navigate(`/room/${boardId}`);
   };
 
   return (
@@ -95,13 +98,34 @@ const Dashboard = () => {
           </p>
         </div>
 
-        {/* Boards placeholder */}
-        <BoardsGrid
-          boards={boards}
-          onCreateBoard={handleCreateBoard}
-          onOpenBoard={handleOpenBoard}
+        {/* Boards Grid */}
+    <div
+      className="
+        grid
+        grid-cols-2
+        sm:grid-cols-3
+        md:grid-cols-4
+        lg:grid-cols-5
+        gap-6
+      "
+    >
+      <NewBoardCard onClick={() => setShowNewBoard(true)} />
+
+      {boards.map((board) => (
+        <BoardCard
+          key={board._id}
+          board={board}
+          onOpen={handleOpenBoard}
         />
+      ))}
+    </div>
       </main>
+      <NewBoardModal
+        open={showNewBoard}
+        onClose={() => setShowNewBoard(false)}
+        onCreate={handleCreateBoard}
+        onJoin={handleJoinBoard}
+      />
     </div>
   );
 };

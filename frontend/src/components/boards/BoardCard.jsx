@@ -2,11 +2,11 @@ import { FiMoreHorizontal } from "react-icons/fi";
 import { getRandomBoardThumbnail } from "../../utils/boardThumbnails";
 
 const BoardCard = ({ board, onOpen }) => {
-    const thumbnail = getRandomBoardThumbnail(board.id);
+    const thumbnail = getRandomBoardThumbnail(board._id);
 
   return (
     <div
-      onClick={() => onOpen(board.id)}
+      onClick={() => onOpen(board._id)}
       className="
         aspect-[4/3]
         rounded-xl

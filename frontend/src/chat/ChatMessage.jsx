@@ -6,9 +6,14 @@ const ChatMessage = ({ msg, isMe, showAvatar }) => {
       className={`flex ${isMe ? "justify-end" : "justify-start"} mb-1`}
     >
       {!isMe && showAvatar && (
-        <div className="mr-2 text-xl">{msg.user.avatar}</div>
+        <div className="mr-2">
+          <img
+            src={msg.user.avatar}
+            alt={msg.user.name}
+            className="w-8 h-8 rounded-full object-cover"
+          />
+        </div>
       )}
-
       <div
         className={`max-w-[70%] px-3 py-2 rounded-lg text-sm
           ${isMe

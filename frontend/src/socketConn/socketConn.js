@@ -7,13 +7,20 @@ import {setUserId} from '../store/userSlice';
 import { addMessage } from "../chat/chatSlice";
 
 let socket;
-export const connectWithSocketServer = () => {
-    socket = io("http://localhost:3000");
+export const connectWithSocketServer = (roomId) => {
+    socket = io("http://localhost:3000", {
+        auth: {
+            token: localStorage.getItem("token"),
+        },
+    });
+
 
     //listens from server
     socket.on("connect", () => {
         console.log("connected to socketio server");
-        store.dispatch(setUserId(socket.id));
+        // store.dispatch(setUserId(socket.id));
+
+        joinRoom({roomId});
     });
 
     socket.on('whiteboard-state', elements => {
@@ -73,9 +80,19 @@ export const emitFullState = (elements) => {
 };
 
 export const joinRoom = ({roomId}) => {
-    const state = store.getState();
-    const user = state.user;
-    socket.emit('join-room', {roomId, user});
+    const {user} = store.getState().auth;
+
+    if(!user){
+        console.warn("User not ready, delaying join-room");
+        return;
+    }
+
+    const { _id, ...userData } = user;
+    const socketUser = {
+        userId: _id,
+        ...userData
+    };
+    socket.emit('join-room', {roomId, user: socketUser});
 };
 
 export const emitChatMessage = (data) => {

@@ -4,7 +4,7 @@ import { FiUsers } from "react-icons/fi";
 
 const PresenceSidebar = () => {
   const users = useSelector((state) => state.presence.users);
-  const me = useSelector((state) => state.user);
+  const me = useSelector((state) => state.auth.user);
   const [open, setOpen] = useState(false);
 
   return (
@@ -25,7 +25,7 @@ const PresenceSidebar = () => {
         <FiUsers size={22} />
       </button>
 
-      {/* Backdrop (optional but recommended) */}
+      {/* Backdrop */}
       <div
         onClick={() => setOpen(false)}
         className={`fixed inset-0 z-40 bg-black/20 transition-opacity
@@ -53,7 +53,7 @@ const PresenceSidebar = () => {
               key={u.userId}
               className={`flex items-center gap-2 p-2 rounded
                 text-gray-900 dark:text-gray-100
-                ${u.userId === me.userId
+                ${u.userId === me._id
                   ? "bg-blue-100 dark:bg-blue-900/40"
                   : "bg-gray-100 dark:bg-neutral-800"}
               `}
@@ -61,7 +61,7 @@ const PresenceSidebar = () => {
               <span className="text-xl">{u.avatar}</span>
               <span className="font-medium">
                 {u.name}
-                {u.userId === me.userId && " (You)"}
+                {u.userId === me._id && " (You)"}
               </span>
             </li>
           ))}

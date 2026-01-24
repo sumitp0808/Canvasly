@@ -14,6 +14,7 @@ app.use(cors());
 /* --- ROUTES ---*/
 app.use(express.json());
 app.use('/auth', authRouter);
+app.use('/boards', require('./routes/board.routes'));
 
 
 /* --- MONGO DB CONNECT --- */
@@ -43,7 +44,7 @@ io.on('connection', (socket) => {
         socket.user = user;
         
         const newUser = {
-            userId: socket.id,
+            userId: user.userId,
             name: user.name,
             avatar: user.avatar,
         };
@@ -87,21 +88,18 @@ io.on('connection', (socket) => {
     });
 
     socket.on('cursor-position', (cursorData) => {
-        socket.to(socket.roomId).emit('cursor-position', {
-            ...cursorData,
-            userId: socket.id,
-        });
+        socket.to(socket.roomId).emit('cursor-position', cursorData);
     });
 
     socket.on('disconnect', () => {
         const roomId = socket.roomId;
-        if(!roomId || !roomUsers[roomId]) return;
+        if(!roomId || !roomUsers[roomId] || !socket.user) return;
 
         roomUsers[roomId] = roomUsers[roomId].filter(
-            u => u.userId !== socket.id
+            u => u.userId !== socket.user.userId
         );
 
-        socket.to(roomId).emit('user-disconnected', socket.id);
+        socket.to(roomId).emit('user-disconnected', socket.user.userId);
         socket.leave(roomId);
         //cleanup
         if (roomUsers[roomId].length === 0) {

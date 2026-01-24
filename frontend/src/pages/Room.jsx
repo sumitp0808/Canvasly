@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setElements } from "../whiteboard/whiteboardSlice";
+import { getBoardById } from "../utils/boardsApi";
 import Whiteboard from "../whiteboard/Whiteboard";
 import CursorOverlay from "../cursorOverlay/CursorOverlay";
 import { connectWithSocketServer, joinRoom } from "../socketConn/socketConn";
@@ -9,19 +11,30 @@ import ChatSidebar from "../chat/chatSidebar";
 
 const Room = () => {
   const { roomId } = useParams();
-  // const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    connectWithSocketServer();
-    joinRoom({roomId});
-  }, []);
+    let mounted = true;
+
+    getBoardById(roomId).then((board) => {
+      if(!mounted) return;
+
+      dispatch(setElements(board.elements || []));
+      connectWithSocketServer(roomId);
+    })
+
+    // joinRoom({roomId});
+    return () => {
+      mounted = false;
+    };
+  }, [roomId]);
 
   return (
     <>
-      <Whiteboard />
+      <Whiteboard roomId = {roomId} />
       <CursorOverlay />
       <PresenceSidebar />
-      <ChatSidebar />
+      <ChatSidebar roomId = {roomId} />
     </>
   );
 };

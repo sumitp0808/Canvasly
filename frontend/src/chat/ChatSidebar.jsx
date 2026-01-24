@@ -6,12 +6,12 @@ import DateSeparator from "./DateSeparator";
 import { isSameDay } from "./chatUtils";
 import { FiMessageSquare } from "react-icons/fi";
 
-const ChatDrawer = () => {
+const ChatDrawer = ({roomId}) => {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
 
   const messages = useSelector((state) => state.chat.messages);
-  const me = useSelector((state) => state.user);
+  const me = useSelector((state) => state.auth.user);
 
   const bottomRef = useRef(null);
 
@@ -23,9 +23,9 @@ const ChatDrawer = () => {
     if (!text.trim()) return;
 
     emitChatMessage({
-      roomId: me.roomId,
+      roomId,
       message: text,
-      user: { name: me.name, avatar: me.avatar },
+      user: {userId: me._id, name: me.name, avatar: me.avatar },
     });
 
     setText("");
@@ -71,10 +71,10 @@ const ChatDrawer = () => {
             const showDate =
               !prev || !isSameDay(prev.timestamp, msg.timestamp);
 
-            const isMe = msg.user.name === me.name;
+            const isMe = msg.user.userId === me._id;
             const showAvatar =
               !isMe &&
-              (!prev || prev.user.name !== msg.user.name);
+              (!prev || prev.user.userId !== msg.user.userId);
 
             return (
               <div key={msg.id}>

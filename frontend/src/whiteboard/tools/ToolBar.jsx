@@ -19,6 +19,7 @@ import { emitClearWhiteboard, emitFullState } from '../../socketConn/socketConn'
 import ColorPickerTool from './ColorPickerTool';
 import StrokeWidthTool from './StrokeWidthTool';
 import FillTool from './fillTool/FillTool';
+import { saveBoardElements } from '../../utils/boardsApi';
 
 const IconButton = ({icon, type}) => {
   const dispatch = useDispatch();
@@ -54,7 +55,7 @@ const tools = [
 { icon: <FaEraser />, label: 'Eraser', type: toolTypes.ERASER },
 ];
 
-const Toolbar = () => {
+const Toolbar = ({roomId}) => {
   const { history, redoStack } = useSelector((state) => state.whiteboard);
 
   const dispatch = useDispatch();
@@ -64,15 +65,20 @@ const Toolbar = () => {
     dispatch(setElements([]));   //client side clearing
 
     emitClearWhiteboard();       //for server side clearing
+    saveBoardElements(roomId, []);
   };
 
   const handleUndo = () => {
     dispatch(undo());
-    emitFullState(store.getState().whiteboard.elements);
+    const newElements = store.getState().whiteboard.elements;
+    emitFullState(newElements);
+    saveBoardElements(roomId, newElements);
   };
   const handleRedo = () => {
     dispatch(redo());
-    emitFullState(store.getState().whiteboard.elements);
+    const newElements = store.getState().whiteboard.elements;
+    emitFullState(newElements);
+    saveBoardElements(roomId, newElements);
   };
 
 return ( 

@@ -10,13 +10,14 @@ import {updateElement as updateElementInStore} from "./whiteboardSlice";
 import { setElements } from "./whiteboardSlice";
 import { pushToHistory, undo, redo } from "./whiteboardSlice";
 import { emitCursorPosition, emitFullState } from "../socketConn/socketConn";
+import { saveBoardElements } from "../utils/boardsApi";
 
 //for cursors
 let emitCursor = true;
 let lastCursorPosition;
 
-const Whiteboard = () => {
-  const user = useSelector((state) => state.user);
+const Whiteboard = ({roomId}) => {
+  const user = useSelector((state) => state.auth.user);
   const strokeColor = useSelector((state) => state.whiteboard.strokeColor);
   const strokeWidth = useSelector((state) => state.whiteboard.strokeWidth);
   const fillColor = useSelector((state) => state.whiteboard.fillColor);
@@ -183,6 +184,8 @@ const Whiteboard = () => {
 
     setAction(null);
     setSelectedElement(null);
+
+    saveBoardElements(roomId, elements);
   }
 
   const handleMouseMove = (event) => {
@@ -190,9 +193,9 @@ const Whiteboard = () => {
 
     //cursor update
 
-    lastCursorPosition = {x: clientX, y: clientY, name: user.name};
+    lastCursorPosition = {userId: user._id, x: clientX, y: clientY, name: user.name};
     if(emitCursor) {
-      emitCursorPosition({x: clientX, y: clientY, name: user.name});
+      emitCursorPosition({x: clientX, y: clientY, name: user.name, userId: user._id});
       emitCursor = false;
 
       //updating cursor position only after some delay
@@ -306,7 +309,7 @@ const Whiteboard = () => {
 
   return (
     <>
-        <Toolbar />
+        <Toolbar roomId = {roomId} />
         {action === actions.WRITING ? (
           <textarea 
           ref = {textareaRef}

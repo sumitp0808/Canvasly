@@ -2,7 +2,7 @@ import {createSlice} from '@reduxjs/toolkit';
 import {cursorColors} from './constants/cursorColors';
 
 const initialState = {
-    cursors: []
+    cursors: []   //{userId, name, x, y, color}
 };
 
 const cursorSlice = createSlice({

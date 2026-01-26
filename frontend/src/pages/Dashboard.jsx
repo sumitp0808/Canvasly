@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { logout } from "../auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import { FiLogOut } from "react-icons/fi";
+import toast from "react-hot-toast";
 
 import BoardCard from "../components/boards/BoardCard";
 import NewBoardCard from "../components/boards/NewBoardCard";
@@ -61,18 +62,31 @@ const Dashboard = () => {
     navigator.clipboard.writeText(
       `${window.location.origin}/room/${boardId}`
     );
+    toast.success("Copied to clipboard");
   };
 
   const handleRenameBoardSave = async (boardId, title) => {
-    const updated = await renameBoardApi(boardId, title);
-    setBoards((prev) =>
+    try {
+      const updated = await renameBoardApi(boardId, title);
+      setBoards((prev) =>
       prev.map((b) => (b._id === boardId ? updated : b))
-    );
+      );
+
+      toast.success("Board renamed")
+    } catch(err) {
+      toast.error("Failed to rename board");
+    }
   };
 
   const handleDeleteBoardConfirm = async (boardId) => {
-    await deleteBoardApi(boardId);
-    setBoards((prev) => prev.filter((b) => b._id !== boardId));
+    try{
+      await deleteBoardApi(boardId);
+      setBoards((prev) => prev.filter((b) => b._id !== boardId));
+
+      toast.success("Board deleted");
+    } catch(err) {
+      toast.error("Failed to delete board");
+    }
   };
 
   return (

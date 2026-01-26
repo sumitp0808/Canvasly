@@ -3,6 +3,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import Room from "./pages/Room";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import {Toaster} from "react-hot-toast";
 import { Navigate } from "react-router-dom";
 import RequireAuth from "./auth/RequireAuth";
 import {useDispatch, useSelector } from "react-redux";
@@ -29,6 +30,15 @@ function App() {
   return (
   <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
     <BrowserRouter>
+      {/* Toaster */}
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          duration: 3000,
+          style: { fontSize: "14px" },
+        }}
+      />
+
       <Routes>
         <Route path="/" element={token ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
 

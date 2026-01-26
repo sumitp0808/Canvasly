@@ -95,6 +95,13 @@ export const joinRoom = ({roomId}) => {
     socket.emit('join-room', {roomId, user: socketUser});
 };
 
+export const disconnectSocket = () => {
+  if (socket) {
+    socket.disconnect();
+    socket = null;
+  }
+};
+
 export const emitChatMessage = (data) => {
     //data -> {roomId, message, user}
     socket.emit("chat-message", data);

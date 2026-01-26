@@ -14,3 +14,10 @@ export const getBoardById = (boardId) =>
 
 export const saveBoardElements = (boardId, elements) =>
   api.put(`/boards/${boardId}/elements`, { elements });
+
+export const renameBoard = (boardId, title) =>
+  api.put(`/boards/${boardId}`, { title }).then(res => res.data);
+
+export const deleteBoard = (boardId) =>
+  api.delete(`/boards/${boardId}`).then(res => res.data);
+

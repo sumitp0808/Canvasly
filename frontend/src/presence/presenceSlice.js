@@ -19,7 +19,9 @@ const presenceSlice = createSlice({
         u => u.userId !== action.payload
       );
     },
-    resetPresence: () => initialState,
+    resetPresence: (state) => {
+      state.users = [];
+    },
   },
 });
 

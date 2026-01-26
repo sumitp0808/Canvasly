@@ -7,5 +7,7 @@ router.post("/join", auth, controller.joinBoard);
 router.get("/", auth, controller.getMyBoards);
 router.get("/:id", auth, controller.getBoardById);
 router.put("/:id/elements", auth, controller.saveBoardElements);
+router.put("/:id", auth, controller.renameBoard);
+router.delete("/:id", auth, controller.deleteBoard);
 
 module.exports = router;

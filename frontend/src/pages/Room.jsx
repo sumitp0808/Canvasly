@@ -1,11 +1,13 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { resetPresence } from "../presence/presenceSlice";
+import {resetCursors} from "../cursorOverlay/cursorSlice";
 import { setElements } from "../whiteboard/whiteboardSlice";
 import { getBoardById } from "../utils/boardsApi";
 import Whiteboard from "../whiteboard/Whiteboard";
 import CursorOverlay from "../cursorOverlay/CursorOverlay";
-import { connectWithSocketServer, joinRoom } from "../socketConn/socketConn";
+import { connectWithSocketServer, disconnectSocket} from "../socketConn/socketConn";
 import PresenceSidebar from "../presence/PresenceSidebar";
 import ChatSidebar from "../chat/chatSidebar";
 
@@ -14,18 +16,17 @@ const Room = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    let mounted = true;
+
+    dispatch(resetPresence());
+    dispatch(resetCursors());
 
     getBoardById(roomId).then((board) => {
-      if(!mounted) return;
-
       dispatch(setElements(board.elements || []));
       connectWithSocketServer(roomId);
     })
 
-    // joinRoom({roomId});
     return () => {
-      mounted = false;
+      disconnectSocket();
     };
   }, [roomId]);
 

@@ -69,3 +69,42 @@ exports.saveBoardElements = async (req, res) => {
 
   res.json({ success: true });
 };
+
+
+//mutation controllers
+exports.renameBoard = async (req, res) => {
+  const { id } = req.params;
+  const { title } = req.body;
+  const userId = req.user._id;
+
+  if (!title || !title.trim()) {
+    return res.status(400).json({ error: "Title is required" });
+  }
+
+  const board = await Board.findById(id);
+  if (!board) return res.status(404).json({ error: "Board not found" });
+
+  if (!board.members.includes(userId)) {
+    return res.status(403).json({ error: "Access denied" });
+  }
+
+  board.title = title.trim();
+  await board.save();
+
+  res.json(board);
+};
+
+exports.deleteBoard = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user._id;
+
+  const board = await Board.findById(id);
+  if (!board) return res.status(404).json({ error: "Board not found" });
+
+  if (!board.members.includes(userId)) {
+    return res.status(403).json({ error: "Access denied" });
+  }
+
+  await board.deleteOne();
+  res.json({ success: true });
+};

@@ -8,7 +8,8 @@ import { addMessage } from "../chat/chatSlice";
 
 let socket;
 export const connectWithSocketServer = (roomId) => {
-    socket = io("http://localhost:3000", {
+    socket = io(import.meta.env.VITE_BACKEND_URL, {
+        transports: ["websocket"],
         auth: {
             token: localStorage.getItem("token"),
         },

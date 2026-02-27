@@ -9,7 +9,10 @@ const {Server} = require("socket.io");
 
 const server = http.createServer(app);
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.CLIENT_URL,
+  credentials: true
+}));
 
 /* --- ROUTES ---*/
 app.use(express.json());
@@ -29,7 +32,7 @@ const roomUsers = {};  // roomId -> [{ userId, name, avatar }]
 
 const io = new Server(server, {
     cors: {
-        origin: '*',
+        origin: process.env.CLIENT_URL,
         methods: ["GET", "POST"],
     },
 });

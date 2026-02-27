@@ -11,7 +11,7 @@ const GoogleLoginButton = () => {
   const handleSuccess = async (res) => {
     try {
         const {data} = await axios.post(
-          "http://localhost:3000/auth/google",
+          `${import.meta.env.VITE_BACKEND_URL}/auth/google`,
           { token: res.credential }
         );
 

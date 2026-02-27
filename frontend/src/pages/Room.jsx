@@ -9,7 +9,7 @@ import Whiteboard from "../whiteboard/Whiteboard";
 import CursorOverlay from "../cursorOverlay/CursorOverlay";
 import { connectWithSocketServer, disconnectSocket} from "../socketConn/socketConn";
 import PresenceSidebar from "../presence/PresenceSidebar";
-import ChatSidebar from "../chat/chatSidebar";
+import ChatSidebar from "../chat/ChatSidebar";
 
 const Room = () => {
   const { roomId } = useParams();

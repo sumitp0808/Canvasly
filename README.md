@@ -16,7 +16,7 @@ Authentication
 Secure login is implemented using Google OAuth 2.0.
 Users can authenticate without managing credentials locally, ensuring industry-standard identity verification.
 
-<img src="docs/google-oauth-login.png" width="800"/>
+<img src="docs/google-oauth-login.png" width="600"/>
 User Dashboard
 
 The dashboard allows users to:
@@ -25,7 +25,7 @@ Create new whiteboards
 Access previously created boards
 Rejoin boards they collaborated on earlier
 Join boards using a shared room ID
-<img src="docs/user-dashboard.png" width="800"/>
+<img src="docs/user-dashboard.png" width="600"/>
 Shared Board Participation
 
 Boards remain accessible to:
@@ -58,14 +58,14 @@ Circle tool
 Stroke eraser
 Undo (Ctrl + Z)
 Redo (Ctrl + Y)
-<img src="docs/drawing-tools.png" width="900"/>
+<img src="docs/drawing-tools.png" width="800"/>
 Real-Time Multi-User Collaboration
 
 Multiple users can interact with the same whiteboard simultaneously.
 
 Canvas state is synchronized across clients using Socket.IO event broadcasting.
 
-<img src="docs/live-collaboration.png" width="900"/>
+<img src="docs/live-collaboration.png" width="800"/>
 Active Users in Room
 
 Each whiteboard session displays currently connected participants.
@@ -76,12 +76,12 @@ Split-view example:
 
 Single-user panel view:
 
-<img src="docs/room-users-panel.png" width="400"/>
+<img src="docs/room-users-panel.png" width="600"/>
 Live Group Chat
 
 Participants inside a session can communicate through integrated real-time messaging.
 
-<img src="docs/group-chat.png" width="500"/>
+<img src="docs/group-chat.png" width="800"/>
 Shareable Room-Based Collaboration
 
 Each whiteboard session generates a unique room identifier embedded in the URL.
